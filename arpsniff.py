@@ -1,3 +1,22 @@
+
+#define class that is ARP, so each local host on the network is added as an obj$
+#also compare it to existing list (array?) of obects
+#
+
+
+class ARPhost():
+
+    def __init__(self, name, ip, mac ):
+        ARPhost.__init__(self, name)
+        self.name =
+        self.ip = 
+        self.mac = 
+#    def mac(self, mac):
+
+
+
+
+
 import struct
 import socket
 import binascii
