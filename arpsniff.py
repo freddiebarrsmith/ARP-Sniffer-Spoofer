@@ -23,11 +23,7 @@ while True:
     protocol = ipHdr[6]
     s_addr = socket.inet_ntoa(ipHdr[8]);
     d_addr = socket.inet_ntoa(ipHdr[9]);
-#    print protocol
-#    print sourceMAC
-#    print destinationMAC
-#    print s_addr
-#    print d_addr
+
     if protocol == 62:
         print protocol
         print sourceMAC
