@@ -1,10 +1,22 @@
 import nmap
+import json
 nm = nmap.PortScanner()
 
 host = '192.168.0.*'
 results = nm.scan(hosts=host, arguments='-sP')
 
+#need to parse out results
 
-hosts_list = [(x, nm[x]['status']['state']) for x in nm.all_hosts()]
-for host, status in hosts_list:
-    print('{0}:{1}'.format(host, status))
+print results
+
+results2 = nm.all_hosts()
+
+print results2
+
+
+parsed_json = json.loads(results)
+pprint(parsed_json)
+
+#for host in nm.all_hosts():
+#    print nm[host].addresses()
+#    print nm[host].hostnames()
