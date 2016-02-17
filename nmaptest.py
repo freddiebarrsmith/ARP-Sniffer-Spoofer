@@ -17,6 +17,6 @@ print results2
 parsed_json = json.loads(results)
 pprint(parsed_json)
 
-#for host in nm.all_hosts():
-#    print nm[host].addresses()
-#    print nm[host].hostnames()
+for host in nm.all_hosts():
+    print nm[host].addresses()
+    print nm[host].hostnames()
