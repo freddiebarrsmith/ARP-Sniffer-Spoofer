@@ -12,11 +12,11 @@ class ARPhost():
         self.mac = 
 #    def mac(self, mac):
 
-import nmap
-nm = nmap.PortScanner()
+#import nmap
+#nm = nmap.PortScanner()
 
-host = '192.168.0.*'
-nm.scan(hosts=host, arguments='-sP')
+#host = '192.168.0.*'
+#nm.scan(hosts=host, arguments='-sP')
 
 
 
