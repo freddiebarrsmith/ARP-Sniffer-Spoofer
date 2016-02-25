@@ -1,4 +1,4 @@
-#define class that is ARP, so each local host on the network is added as an obj$
+#define class that is ARP, so each local host on the network is added as an object
 #also compare it to existing list (array?) of obects
 #
 
