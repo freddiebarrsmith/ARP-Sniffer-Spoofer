@@ -1,4 +1,4 @@
-#define class that is ARP, so each local host on the network is added as an obj$
+#define class that is ARP, so each local host on the network is added as an object
 #also compare it to existing list (array?) of obects
 #
 
@@ -12,11 +12,11 @@ class ARPhost():
         self.mac = 
 #    def mac(self, mac):
 
-import nmap
-nm = nmap.PortScanner()
+#import nmap
+#nm = nmap.PortScanner()
 
-host = '192.168.0.*'
-nm.scan(hosts=host, arguments='-sP')
+#host = '192.168.0.*'
+#nm.scan(hosts=host, arguments='-sP')
 
 
 

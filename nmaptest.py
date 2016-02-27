@@ -21,9 +21,13 @@ tobeparsed = results["scan"]
 
 
 for host in nm.all_hosts():
+
     print tobeparsed[host]
     print tobeparsed[host]["hostnames"]
     print "name "
     print tobeparsed[host]["hostnames"][0]["name"]
     print tobeparsed[host]["addresses"]["mac"]
     print tobeparsed[host]["addresses"]["ipv4"]
+
+    print nm[host].addresses()
+    print nm[host].hostnames()
